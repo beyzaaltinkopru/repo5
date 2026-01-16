@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Long Boi - NYC City Rhythm Project</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        background: #0F2027;
+        cursor: auto; /* Cursor visible */
+    }
+
+    /* Navbar */
+    .navbar {
+        position: fixed;
+        top:0; left:0;
+        width:100%;
+        background: linear-gradient(90deg, #0F2027, #203A43, #2C5364);
+        padding:15px 30px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        z-index:100;
+        box-shadow:0 2px 10px rgba(0,0,0,0.3);
+        transition: opacity 0.3s ease;
+    }
+    .navbar.empty {
+        background: linear-gradient(90deg, #0F2027, #203A43, #2C5364);
+    }
+    .navbar.empty .nav-buttons {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .logo { 
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size:24px; 
+        font-weight:bold; 
+        color:white; 
+        transition: opacity 0.3s ease;
+    }
+    .logo-container {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, #0A1519, #15252A, #1E3D47);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .logo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .nav-buttons { display:flex; gap:10px; transition: opacity 0.3s ease; }
+    .nav-btn {
+        background: rgba(255,255,255,0.2);
+        color:white;
+        border:none;
+        padding:10px 20px;
+        border-radius:8px;
+        font-size:16px;
+        font-weight:500;
+        cursor:pointer;
+        transition:all 0.3s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.3); }
+    .nav-btn.active { background: rgba(255,255,255,0.4); font-weight:600; }
+
+    /* Background */
+    .background {
+        position:absolute; top:0; left:0;
+        width:100%; height:100%;
+        background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&h=1080&fit=crop');
+        background-size:cover;
+        background-position:center;
+        filter: brightness(0.7);
+        z-index:0;
+    }
+
+    /* Pages */
+    .page { display:none; position:absolute; top:0; left:0; width:100%; height:100%; overflow-y:auto; z-index:2; background: rgba(0,0,0,0.3); }
+    .page.active { display:block; }
+
+    /* Home Page */
+    .main-container {
+        position:absolute; top:50%; left:50%;
+        transform: translate(-50%, -50%);
+        z-index:1;
+        text-align:center;
+    }
+    .title { color:white; font-size:56px; font-weight:bold; margin-bottom:30px; text-shadow:2px 2px 8px rgba(0,0,0,0.5); }
+    .home-buttons { display:flex; justify-content:center; gap:20px; }
+    .home-buttons button {
+        padding:12px 25px;
+        font-size:16px;
+        border-radius:8px;
+        border:none;
+        cursor:pointer;
+        background: rgba(255,255,255,0.2);
+        color:white;
+        transition:0.3s;
+    }
+    .home-buttons button:hover { background: rgba(255,255,255,0.35); }
+
+    /* project By */
+    .project-by {
+        position: fixed; bottom:20px; right:30px;
+        color:white; font-size:14px; z-index:10;
+        text-shadow:1px 1px 3px rgba(0,0,0,0.5);
+    }
+    .project-by strong { color: rgba(255,255,255,0.9); margin-right:5px; }
+    .team-names span { margin:0 5px; }
+    .team-names span:not(:last-child)::after { content:", "; }
+
+    /* Duck container */
+    .duck-container {
+        position: fixed;
+        width: 50.4px; height: 100.8px;
+        pointer-events: none;
+        z-index: 9999;
+        transform-origin: center bottom;
+        transition: transform 0.1s ease-out;
+    }
+
+    /* Walking legs animation */
+    .leg-left, .leg-right {
+        transform-origin: center top;
+    }
+
+    .leg-left {
+        animation: walk-left 0.6s ease-in-out infinite alternate;
+    }
+
+    .leg-right {
+        animation: walk-right 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes walk-left {
+        0% { transform: rotate(20deg); }
+        50% { transform: rotate(-20deg); }
+        100% { transform: rotate(20deg); }
+    }
+
+    @keyframes walk-right {
+        0% { transform: rotate(-20deg); }
+        50% { transform: rotate(20deg); }
+        100% { transform: rotate(-20deg); }
+    }
+
+    /* Page content */
+    .page-content { max-width:1000px; margin:0 auto; padding:40px 20px; padding-top:100px; }
+    .page-header { background: rgba(20,20,20,0.8); padding:20px; border-radius:10px; margin-bottom:30px; text-align:center; }
+    .page-header h1 { color:white; font-size:32px; }
+    .box { background: rgba(20,20,20,0.85); padding:25px; border-radius:12px; margin-bottom:30px; box-shadow:0 5px 20px rgba(0,0,0,0.3); color:#fff; }
+    .box h2 { color:#4A90E2; font-size:22px; margin-bottom:15px; }
+    .box-content p, .box-content li { font-size:15px; line-height:1.6; color: rgba(255,255,255,0.85); text-align: justify; }
+    .box-content ul { padding-left:20px; margin-top:10px; }
+    .visual-box { background: rgba(20,20,20,0.85); border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 5px 15px rgba(0,0,0,0.3); }
+    .visual-box h3 { color:#4A90E2; margin-bottom:15px; }
+    .visual-box p { text-align: justify; }
+    .placeholder { background: rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.2); border-radius:8px; padding:40px; text-align:center; color: rgba(255,255,255,0.5); min-height:150px; display:flex; align-items:center; justify-content:center; margin-top:15px; }
+    .placeholder-text { font-style:italic; }
+
+/* === VISUAL FIXES === */
+.visual-img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    display: block;
+    margin: 0 auto 30px auto;
+}
+
+.iframe-container {
+    width: 100%;
+    max-width: 900px;
+    height: 700px;
+    margin: 0 auto 30px auto;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+</style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYptgx8OdNYb-uNUfkV8khm1fgars6ro9WzA&s" alt="NYC City Rhythm Logo" class="logo-img">
+            </div>
+            <span>Long-boi</span>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showPage('home')">Home</button>
+            <button class="nav-btn" onclick="showPage('project-details')">Project Details</button>
+            <button class="nav-btn" onclick="showPage('visualizations')">Visualizations</button>
+        </div>
+    </div>
+
+    <div class="background"></div>
+
+    <div id="home" class="page active">
+        <div class="main-container">
+            <h1 class="title">New York City's Life Rhythms</h1>
+            <div class="home-buttons">
+                <button onclick="showPage('project-details')">Project Details</button>
+                <button onclick="showPage('visualizations')">Visualizations</button>
+            </div>
+        </div>
+
+        <div id="duck" class="duck-container">
+            <svg width="50.4" height="100.8" viewBox="0 0 70 140">
+                <ellipse cx="35" cy="135" rx="20" ry="5" fill="rgba(0,0,0,0.3)"/>
+                
+                <rect class="leg-left" x="28" y="110" width="5" height="20" fill="#ff8c00"/>
+                <rect class="leg-right" x="37" y="110" width="5" height="20" fill="#ff8c00"/>
+                
+                <ellipse cx="35" cy="95" rx="22" ry="18" fill="#8B7355" stroke="#6B5345" stroke-width="1.5"/>
+                <ellipse cx="35" cy="75" rx="20" ry="15" fill="#F5E6D3" stroke="#E5D6C3" stroke-width="1"/>
+                <ellipse cx="35" cy="60" rx="16" ry="12" fill="#FAFAFA"/>
+                
+                <rect x="31" y="25" width="8" height="38" fill="#8B7355" stroke="#6B5345" stroke-width="1"/>
+                <rect x="32" y="26" width="6" height="36" fill="#A0826D"/>
+                
+                <ellipse cx="35" cy="20" r="12" fill="#0D5F3E" stroke="#0A4A30" stroke-width="1"/>
+                <circle cx="35" cy="18" r="11" fill="#1A7A4E"/>
+                <ellipse cx="35" cy="16" rx="10" ry="8" fill="#267F56"/>
+                
+                <ellipse cx="35" cy="30" rx="9" ry="3" fill="#FFFFFF"/>
+                
+                <circle cx="40" cy="17" r="2.5" fill="#000"/>
+                <circle cx="41" cy="16.5" r="0.8" fill="#FFF"/>
+                
+                <ellipse cx="45" cy="18" rx="8" ry="3" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+                <line x1="45" y1="18" x2="50" y2="18" stroke="#8B6914" stroke-width="0.5"/>
+            </svg>
+        </div>
+
+        <div class="project-by">
+            <strong>project by:</strong>
+            <span class="team-names">
+                <span>Meryem Öncü</span>
+                <span>Ahmed Efe Koluaçık</span>
+                <span>Beyza Altınköprü</span>
+                <span>Yağmur Kondakcı</span>
+                <span>Öykü Akdoğan</span>
+            </span>
+        </div>
+    </div>
+
+    <div id="project-details" class="page">
+        <div class="page-content">
+            <div class="page-header"><h1>Project Details</h1></div>
+            <div class="box">
+                <h2>Project Motivation</h2>
+                <div class="box-content">
+                    <p>This project examines New York City as a dynamic system with a recurring daily "breathing rhythm." Using time-series data from electricity consumption, air quality measurements, traffic volume intensity, subway usage, social events, Citi Bike activity, and 311 noise complaints, we analyze how different urban indicators rise and fall throughout the day. The project focuses on identifying shared temporal patterns across these datasets to understand the city's core daily activity cycle. In addition, we explore how secondary factors such as noise levels, social events, and traffic congestion align with or deviate from this primary rhythm. Finally, by comparing temporal fluctuations across datasets, we investigate whether "hot" and "cold" periods of urban activity emerge over time, revealing moments of intensified or reduced urban engagement rather than fixed spatial zones. Together, these analyses provide insight into how urban systems interact and evolve over time.  </div>              
+            </div>
+            <div class="box">
+                <h2>Research Questions</h2>
+                <div class="box-content">
+                    <ul>
+                        <li>Does a city have a "breathing rhythm"?</li>
+                        <li>How do secondary factors, such as noise pollution, social events, and traffic congestion, align with or deviate from NYC's main daily activity cycle?</li>
+                        <li>Do cities exhibit hidden "hot" and "cold" periods of activity over time?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="visualizations" class="page">
+        <div class="page-content">
+            <div class="page-header"><h1>Visualizations</h1></div>
+            <div class="visual-box">
+                <h3>City Breathing Rhythm</h3>
+                
+                <img src="urban_trends_jan_jun_2024.png"
+     alt="Urban Trends Normalized Graph"
+     class="visual-img">
+
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 15px; text-align: justify;">We normalized Citibike rides, traffic volume, and electricity consumption to a 0 to 1 scale to compare how New York's pulse changes from winter to summer. Citibike acts as a perfect thermometer rising linearly with temperature. Traffic, however, spiked erratically in March before crashing in April, revealing chaos rather than seasonal patterns. Electricity remained our stable baseline, jumping in February for heating and plateauing until June's air conditioning demand. New York operates on three disconnected rhythms: predictable bike commuting, volatile traffic, and steady energy consumption.</p>
+                
+                <img src="urban_trends_jan_jun_2024.png"
+     alt="Urban Trends Normalized Graph"
+     class="visual-img">
+
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 15px; text-align: justify;">Zooming into daily patterns, a critical question emerged: does this seasonal pulse hold at the day to day level?
+The daily view shows Citibike data as a literal heartbeat spiking and dropping with weekends and weather, growing stronger from January to June. Traffic, in contrast, shows massive irregular spikes like late March, proving it's driven by unpredictable events rather than daily patterns. Takeaway: micromobility is stable and plannable; traffic is fundamentally chaotic.</p>
+            </div>
+            <div class="visual-box">
+                <h3>Secondary Factors Analysis</h3>
+                
+                <img src="nyc_urban_rhythm_events_traffic_noise_2024.png" class="visual-img">
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 15px; text-align: justify;">This visualization compares normalized traffic volume, noise complaints, and social event activity to capture New York City's broader urban rhythm across 2024. From January through July, both event frequency and noise complaints show a steady upward trend, reflecting the intensification of social activity and outdoor presence as the year progresses. Traffic volume follows a similar pattern, with noticeable increases particularly in April and June, suggesting periods of heightened mobility that align with seasonal transitions and event-driven movement. A visible gap during July and August highlights data scarcity rather than a true decline, underscoring the importance of contextualizing absences within the dataset. After October, all three indicators exhibit a general downturn, marking a collective slowdown in urban intensity as colder months approach. Together, these synchronized rises, plateaus, and declines illustrate how movement, social activity, and urban disturbance co-evolve over time, reinforcing the notion of a shared underlying city rhythm shaped by both behavioral and seasonal forces.</p>
+            </div>
+            <div class="visual-box">
+                <h3>Hot & Cold Zones</h3>
+                
+                <div class="iframe-container">
+    <iframe src="hot_cold_zones.html"
+            title="Hot & Cold Zones Interactive Graph"></iframe>
+</div>
+                
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 15px; text-align: justify;">This interactive visualization reveals secondary urban signals that shape New York City's daily and seasonal rhythm. When examined over time, noise complaint intensity and social event frequency tend to increase during periods of heightened urban activity, although this overlap is not always exact. A notable spike in noise complaints observed on September 15 highlights a temporary deviation from the city's underlying activity cycle, while subtle yet persistent temporal patterns can be detected in the background of both noise and event distributions. The air quality distribution further shows a clear increase during the summer months, underscoring how seasonal environmental conditions influence the urban experience. Taken together, these observations suggest that the city's "breathing" is shaped not only by mobility or energy use, but also by social and environmental factors and the deviations they introduce, positioning this visualization as a central element in understanding the city's multilayered dynamics.</p>
+            </div>
+            <div class="visual-box">
+                <h3>Regression</h3>
+                
+                <img src="image_3e5296.png" class="visual-img">
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; font-size: 15px; text-align: justify;">If traffic is this chaotic, what's its real impact on urban life? We tested the obvious assumption: more cars = more noise complaints.The regression revealed a weak link: R² = 0.042, meaning traffic explains just 4% of noise complaints. Despite the slight upward trend, data points scatter wildly low-traffic days still saw massive complaint spikes. The verdict: construction, parties, and neighbor disputes drive noise complaints far more than traffic does. Reducing cars alone won't solve the noise problem.</p>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+
+        // Navbar içeriğini home sayfasında gizle, diğer sayfalarda göster
+        const navbar = document.querySelector('.navbar');
+        if(pageId === 'home') {
+            navbar.classList.add('empty');
+        } else {
+            navbar.classList.remove('empty');
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const navMap = { 'home':0, 'project-details':1, 'visualizations':2 };
+        const navButtons = document.querySelectorAll('.nav-btn');
+        if(navMap[pageId]!==undefined) navButtons[navMap[pageId]].classList.add('active');
+    }
+
+    // Sayfa yüklendiğinde navbar'ı kontrol et
+    window.addEventListener('DOMContentLoaded', function() {
+        const activePage = document.querySelector('.page.active');
+        if(activePage && activePage.id === 'home') {
+            document.querySelector('.navbar').classList.add('empty');
+        }
+    });
+
+    // Long Boi follow cursor
+    const longBoi = document.getElementById('duck');
+    let mouseX = window.innerWidth/2;
+    let mouseY = window.innerHeight/2;
+    let posX = mouseX;
+    let posY = mouseY;
+
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function animateDuck() {
+        if(document.getElementById('home').classList.contains('active')) {
+            // Smooth follow
+            posX += (mouseX - posX)*0.08;
+            posY += (mouseY - posY)*0.08;
+
+            longBoi.style.left = (posX - 25.2)+'px';
+            longBoi.style.top = (posY - 100.8)+'px';
+
+            const dx = mouseX - posX;
+            const dy = mouseY - posY;
+            const angle = Math.atan2(dy, dx)*(180/Math.PI);
+            longBoi.style.transform = `rotate(${angle}deg)`;
+        }
+        requestAnimationFrame(animateDuck);
+    }
+    animateDuck();
+</script>
+</body>
+</html>
