@@ -188,6 +188,28 @@ The daily view shows Citibike data as a literal heartbeat spiking and dropping w
         requestAnimationFrame(animateDuck);
     }
     animateDuck();
+
+const overlay = document.getElementById('zoomOverlay');
+const zoomedImg = document.getElementById('zoomedImg');
+
+document.querySelectorAll('.zoomable').forEach(el => {
+    el.addEventListener('click', () => {
+        zoomedImg.src = el.tagName === 'IMG' ? el.src : el.querySelector('img').src;
+        overlay.classList.add('active');
+    });
+});
+
+// Click overlay or image to close
+overlay.addEventListener('click', () => {
+    overlay.classList.remove('active');
+    zoomedImg.src = '';
+});
+
+
 </script>
+    <div id="zoomOverlay" class="zoom-overlay">
+    <img id="zoomedImg" src="" alt="Zoomed Image">
+</div>
+
 </body>
 </html>
