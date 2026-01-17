@@ -8,10 +8,12 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="logo" onclick="showPage('home')" style="cursor: pointer;">
-    <div class="logo-container">
+        <div class="logo" style="cursor: pointer;">
+    <div class="logo-container zoomable" onclick="showPage('home')">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYptgx8OdNYb-uNUfkV8khm1fgars6ro9WzA&s" alt="NYC City Rhythm Logo" class="logo-img">
     </div>
+    <span onclick="showPage('home')">Long-boi</span>
+</div>
     <span>Long-boi</span>
 </div>
         <div class="nav-buttons">
@@ -189,17 +191,14 @@ The daily view shows Citibike data as a literal heartbeat spiking and dropping w
     }
     animateDuck();
 
-// Sayfa yüklenince çalışacak şekilde ayarla
 document.addEventListener('click', function (e) {
-    // Tıklanan öğe 'zoomable' sınıfına sahip mi veya içinde mi?
+    // 1. ZOOM AÇMA MANTIĞI
     const target = e.target.closest('.zoomable');
-    
     if (target) {
         const overlay = document.getElementById('zoomOverlay');
         const zoomedImg = document.getElementById('zoomedImg');
         
-        // Eğer tıklanan bir resimse (img) doğrudan src'sini al
-        // Eğer div ise (logo gibi) içindeki img'nin src'sini al
+        // Eğer tıklanan şeyin kendisi <img> değilse içindeki ilk <img>'yi bul
         let imageSrc = '';
         if (target.tagName === 'IMG') {
             imageSrc = target.src;
@@ -211,13 +210,17 @@ document.addEventListener('click', function (e) {
         if (imageSrc) {
             zoomedImg.src = imageSrc;
             overlay.classList.add('active');
+            // Sayfa kaymasını engellemek için body'i kilitleyebiliriz (opsiyonel)
+            document.body.style.overflow = 'hidden';
         }
     }
-});
 
-// Overlay'e (karanlık alana) tıklandığında kapat
-document.getElementById('zoomOverlay').addEventListener('click', function() {
-    this.classList.remove('active');
+    // 2. ZOOM KAPATMA MANTIĞI (Siyah alana veya resme basınca geri dön)
+    const overlay = document.getElementById('zoomOverlay');
+    if (e.target.id === 'zoomOverlay' || e.target.id === 'zoomedImg') {
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto'; // Kaydırmayı tekrar aç
+    }
 });
 </script>
     <div id="zoomOverlay" class="zoom-overlay">
