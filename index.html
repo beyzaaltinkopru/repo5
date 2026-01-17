@@ -189,20 +189,33 @@ The daily view shows Citibike data as a literal heartbeat spiking and dropping w
     }
     animateDuck();
 
-document.querySelectorAll('.zoomable').forEach(item => {
-    item.addEventListener('click', function() {
-        const fullImg = document.getElementById('zoomedImg');
+// Sayfa yüklenince çalışacak şekilde ayarla
+document.addEventListener('click', function (e) {
+    // Tıklanan öğe 'zoomable' sınıfına sahip mi veya içinde mi?
+    const target = e.target.closest('.zoomable');
+    
+    if (target) {
         const overlay = document.getElementById('zoomOverlay');
+        const zoomedImg = document.getElementById('zoomedImg');
         
-        // Eğer tıklanan bir resimse doğrudan src'sini al, değilse içindeki img'yi bul
-        const src = this.tagName === 'IMG' ? this.src : this.querySelector('img').src;
-        
-        fullImg.src = src;
-        overlay.classList.add('active');
-    });
+        // Eğer tıklanan bir resimse (img) doğrudan src'sini al
+        // Eğer div ise (logo gibi) içindeki img'nin src'sini al
+        let imageSrc = '';
+        if (target.tagName === 'IMG') {
+            imageSrc = target.src;
+        } else {
+            const innerImg = target.querySelector('img');
+            if (innerImg) imageSrc = innerImg.src;
+        }
+
+        if (imageSrc) {
+            zoomedImg.src = imageSrc;
+            overlay.classList.add('active');
+        }
+    }
 });
 
-// Kapatmak için siyah alana veya resme tıklanması yeterli
+// Overlay'e (karanlık alana) tıklandığında kapat
 document.getElementById('zoomOverlay').addEventListener('click', function() {
     this.classList.remove('active');
 });
