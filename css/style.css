@@ -200,21 +200,21 @@
     cursor: zoom-in;
 }
 
-/* Zoom Overlay her şeyin en üstünde olmalı */
 .zoom-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.9);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Arka planı hafif şeffaf siyah yapar */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999 !important; /* En yüksek değer */
+    z-index: 99999; /* En üstte olmasını garanti eder */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: pointer; /* Kullanıcıya "tıklarsan kapanır" mesajı verir */
 }
 
 .zoom-overlay.active {
@@ -222,10 +222,16 @@
     visibility: visible;
 }
 
-.zoom-overlay img {
-    max-width: 90%;
-    max-height: 90%;
-    border: 3px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-    cursor: zoom-out;
+#zoomedImg {
+    max-width: 85%;
+    max-height: 85%;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0,0,0,1);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    cursor: default; /* Resmin üstünde imleç normal kalsın */
+}
+
+.zoom-overlay.active #zoomedImg {
+    transform: scale(1); /* Açılırken hafif büyüme efekti */
 }
