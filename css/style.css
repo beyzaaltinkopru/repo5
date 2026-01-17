@@ -163,12 +163,5 @@
     .visual-box p { text-align: justify; }
     .placeholder { background: rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.2); border-radius:8px; padding:40px; text-align:center; color: rgba(255,255,255,0.5); min-height:150px; display:flex; align-items:center; justify-content:center; margin-top:15px; }
     .placeholder-text { font-style:italic; }
-    .chart-img {
-    max-width: 600px;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto 20px auto;
-    border-radius: 8px;
-}
+    .chart-img {max-width: 850px;width: 100%;height: auto;display: block;margin: 0 auto 20px auto;border-radius: 8px;}
+
