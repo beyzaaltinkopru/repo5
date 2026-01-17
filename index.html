@@ -8,12 +8,12 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="logo">
-            <div class="logo-container zoomable">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYptgx8OdNYb-uNUfkV8khm1fgars6ro9WzA&s" alt="NYC City Rhythm Logo" class="logo-img">
-            </div>
-            <span>Long-boi</span>
-        </div>
+        <div class="logo" onclick="showPage('home')" style="cursor: pointer;">
+    <div class="logo-container">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYptgx8OdNYb-uNUfkV8khm1fgars6ro9WzA&s" alt="NYC City Rhythm Logo" class="logo-img">
+    </div>
+    <span>Long-boi</span>
+</div>
         <div class="nav-buttons">
             <button class="nav-btn active" onclick="showPage('home')">Home</button>
             <button class="nav-btn" onclick="showPage('project-details')">Project Details</button>
@@ -189,23 +189,23 @@ The daily view shows Citibike data as a literal heartbeat spiking and dropping w
     }
     animateDuck();
 
-const overlay = document.getElementById('zoomOverlay');
-const zoomedImg = document.getElementById('zoomedImg');
-
-document.querySelectorAll('.zoomable').forEach(el => {
-    el.addEventListener('click', () => {
-        zoomedImg.src = el.tagName === 'IMG' ? el.src : el.querySelector('img').src;
+document.querySelectorAll('.zoomable').forEach(item => {
+    item.addEventListener('click', function() {
+        const fullImg = document.getElementById('zoomedImg');
+        const overlay = document.getElementById('zoomOverlay');
+        
+        // Eğer tıklanan bir resimse doğrudan src'sini al, değilse içindeki img'yi bul
+        const src = this.tagName === 'IMG' ? this.src : this.querySelector('img').src;
+        
+        fullImg.src = src;
         overlay.classList.add('active');
     });
 });
 
-// Click overlay or image to close
-overlay.addEventListener('click', () => {
-    overlay.classList.remove('active');
-    zoomedImg.src = '';
+// Kapatmak için siyah alana veya resme tıklanması yeterli
+document.getElementById('zoomOverlay').addEventListener('click', function() {
+    this.classList.remove('active');
 });
-
-
 </script>
     <div id="zoomOverlay" class="zoom-overlay">
     <img id="zoomedImg" src="" alt="Zoomed Image">
