@@ -172,3 +172,24 @@
     border-radius: 8px;
 }
 
+/* CLICK ZOOM SYSTEM */
+
+.zoomable {
+    cursor: zoom-in;
+    transition: 
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+    z-index: 5;
+}
+
+.zoomable:hover {
+    transform: scale(1.05);
+}
+
+.zoomed {
+    transform: scale(1.35);
+    z-index: 999;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    cursor: zoom-out;
+}
+
