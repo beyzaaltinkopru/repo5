@@ -193,20 +193,21 @@
     cursor: zoom-out;
 }
 /* MODAL CLICK ZOOM */
+/* Zoom Overlay'in her zaman en üstte olduğundan emin olalım */
 .zoom-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.7);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Arka planı daha koyu yaparak odaklanmayı artırır */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10000; /* Her şeyin üstünde olmalı */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease;
+    transition: all 0.3s ease;
 }
 
 .zoom-overlay.active {
@@ -216,10 +217,12 @@
 
 .zoom-overlay img {
     max-width: 90%;
-    max-height: 80%;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    cursor: zoom-out;
+    max-height: 90%;
+    object-fit: contain;
+    transform: scale(0.8);
     transition: transform 0.3s ease;
 }
 
+.zoom-overlay.active img {
+    transform: scale(1); /* Tıklayınca hafifçe büyüme efekti */
+}
